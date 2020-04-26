@@ -52,6 +52,7 @@ func CreateTable() {
 	} else {
 		G_db.CreateTable(&Class{})
 	}
+
 	if G_db.HasTable(&Electives{}) {
 		G_db.AutoMigrate()
 	} else {

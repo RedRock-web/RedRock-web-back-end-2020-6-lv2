@@ -1,9 +1,13 @@
 package router
 
-import "github.com/gin-gonic/gin"
+import (
+	"github.com/gin-gonic/gin"
+)
+
+
 
 func Start() {
 	r := gin.Default()
-	r.POST("/info", Handle)
+	r.POST("/class", Handle)
 	r.Run()
 }

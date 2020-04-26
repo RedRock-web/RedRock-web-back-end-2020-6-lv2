@@ -1,7 +1,11 @@
 package app
 
 import (
+	"RedRock-web-back-end-2020-6-lv2/config"
 	"RedRock-web-back-end-2020-6-lv2/database"
+	"RedRock-web-back-end-2020-6-lv2/response"
+	"errors"
+	"github.com/gin-gonic/gin"
 	"regexp"
 )
 
@@ -24,6 +28,49 @@ func GetAllElectives() {
 		e.Day = v[8]
 		e.RawWeek = v[10]
 		e.Lesson = v[9]
+
 		database.G_db.Create(&e)
 	}
+}
+
+func ChooseElective(g config.GetForm, c *gin.Context) (err error) {
+	var class database.Class
+	var e database.Electives
+
+	tx := database.G_db.Begin()
+	if err = tx.Where("class_id = ? AND day = ? AND lesson = ? AND raw_week = ?", g.ClassId, g.Day, g.Lesson, g.Rawweek).Find(&class).Error; err != nil {
+		tx.Rollback()
+		response.Error(c, 10001, "该课不存在")
+		return err
+	}
+
+	if err = tx.Where("class_id = ? AND day = ? AND = lesson = ? AND raw_week = ?", g.ClassId, g.Day, g.Lesson, g.Rawweek).Find(&e).Error; err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	if IsConflict(class, e) {
+		response.Error(c, 1002, "课程冲突！")
+		return errors.New("configed!")
+	}
+
+	database.G_db.Create(&database.Class{
+		Name:      e.Name,
+		StudentId: g.StudentId,
+		ClassId:   e.ClassId,
+		Day:       e.Day,
+		Lesson:    e.Lesson,
+		RawWeek:   e.RawWeek,
+		Teacher:   e.Teacher,
+	})
+
+	response.OkWithData(c,"选课成功！")
+
+	tx.Commit()
+
+	return err
+}
+
+func IsConflict(c database.Class, e database.Electives) bool {
+	return c.ClassId == e.ClassId && c.Day == e.Day && c.Lesson == e.Lesson && c.RawWeek == e.RawWeek
 }
