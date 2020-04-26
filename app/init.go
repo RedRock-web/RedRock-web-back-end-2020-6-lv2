@@ -7,20 +7,6 @@ import (
 	"net/http"
 )
 
-// 用于并发
-var ch1 chan int
-var ch2 chan int
-
-
-func Start() {
-	for i := 2019211100; i < 2019215111; i++ {
-		if StudentIsExist(i) {
-			go GetAllClassInfo(i)
-		}
-	}
-	<-ch1
-	<-ch2
-}
 
 // 获取每页的 body 信息
 func GetBody(url string) string {

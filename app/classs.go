@@ -1,6 +1,7 @@
 package app
 
 import (
+	"RedRock-web-back-end-2020-6-lv2/database"
 	"regexp"
 	"strconv"
 )
@@ -71,5 +72,4 @@ func GetClassInfo(class string, c database.Class) {
 
 	database.G_db.Create(&c)
 
-	ch1 <- 1
 }
