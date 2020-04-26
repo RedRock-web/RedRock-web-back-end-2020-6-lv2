@@ -13,11 +13,11 @@ type Class struct {
 	gorm.Model
 	Name      string
 	StudentId int
-	ClassId   string
+	ClassId   string    `gorm:"index:idx_class_uix"`
 	Location  string
-	Day       string
-	Lesson    string
-	RawWeek   string
+	Day       string    `gorm:"index:idx_class_uix"`
+	Lesson    string    `gorm:"index:idx_class_uix"`
+	RawWeek   string    `gorm:"index:idx_class_uix"`
 	Teacher   string
 	Semester  string
 }
